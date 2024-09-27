@@ -2,15 +2,14 @@
 .container{
     display: flex;
     flex-direction: column;
-    max-width: 600px;
-    min-width: 500px;
+    max-width: 500px;
+    min-width: 300px;
     width: 70%;
     padding: 50px;
 }
-form{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    height: 300px;
-    
+
+span{
+    margin-top: 40px;
+    color: #525151;
+    text-align: start;
 }
