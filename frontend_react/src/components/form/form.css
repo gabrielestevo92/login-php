@@ -6,7 +6,6 @@ form{
 
     height: 200px;
     font-family: Arial, Helvetica, sans-serif;
-
     
 }
 
@@ -29,7 +28,7 @@ h1{
 }
 #next{
     padding: 10px 0;
-    color: rgb(79, 79, 80);
+    color: rgb(79, 79, 80);    
     
 }
 
@@ -38,5 +37,6 @@ input{
     outline: none;
     border-style:solid;
     border-color: #AAA;
+    border-radius: 5px;
     
 }
