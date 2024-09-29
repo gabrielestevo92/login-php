@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Route;
 // Rota para login - retorna dados do usuario e token de autenticação
 Route::post('/login', [LoginController::class, 'login'])->name('login');
 
+// Rota para cadastrar usuario- A requisição é do tipo POST
+Route::post('/signup', [UserController::class, 'signup']);
+
 //Rotas de acesso restrito ao usuario logado
 Route::group(['middleware' => ['auth:sanctum']], function(){
 
