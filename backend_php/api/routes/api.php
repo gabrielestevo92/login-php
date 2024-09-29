@@ -10,6 +10,11 @@ Route::post('/login', [LoginController::class, 'login'])->name('login');
 // Rota para cadastrar usuario- A requisição é do tipo POST
 Route::post('/signup', [UserController::class, 'signup']);
 
+// Rota para autocadastro.
+Route::post('/autoregister', [UserController::class, 'autoregister']);
+
+
+
 //Rotas de acesso restrito ao usuario logado
 Route::group(['middleware' => ['auth:sanctum']], function(){
 

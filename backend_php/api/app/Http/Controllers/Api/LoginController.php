@@ -12,6 +12,7 @@ use App\Models\User;
 
 class LoginController extends Controller
 {
+    //Metodo responsavel pelo login do usuario
     public function login(Request $request): JsonResponse{
         // Valida se o email e a senha estão corretos
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])){
@@ -33,7 +34,7 @@ class LoginController extends Controller
             ], 404);
         }
     }
-
+    // Metodo responsavel pelo logout do usuario
     public function logout(User $user): JsonResponse{
         try{
             $user->tokens()->delete();
