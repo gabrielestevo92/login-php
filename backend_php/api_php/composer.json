@@ -1,0 +1,15 @@
+{
+    "name": "gabriel/api",
+    "description": "Backend da aplicação \"Tela de login\", onde essa api receberá requisições do frontend e validará o acesso do usuário.",
+    "autoload": {
+        "psr-4": {
+            "app\\": "app"
+        }
+    },
+    "authors": [
+        {
+            "name": "Gabriel Estevão Nunes"
+        }
+    ],
+    "require": {}
+}
