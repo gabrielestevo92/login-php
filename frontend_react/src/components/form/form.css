@@ -20,6 +20,9 @@ h1{
 #email{
     padding: 10px 5px;
 }
+#password{
+    padding: 10px 5px;
+}
 .remember-me{
     color: rgb(79, 79, 80);
     display: flex;

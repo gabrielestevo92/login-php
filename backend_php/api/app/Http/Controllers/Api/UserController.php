@@ -26,7 +26,12 @@ class UserController extends Controller
 
     public function autoregister(Request $request) {
         //dd(Auth::attempt(['email' => $request->email]));;
-        if (!Auth::attempt(['email' => $request->email])){
+        $email = $request->email;
+        $user = User::where('email', $email)->exists();
+        $autocadastro = Autocadastro::where('email', $email)->exists();
+        //dd($user);
+        
+        if (!$user && !$autocadastro){
             // Gera o Codigo de confirmação
             $code = mt_rand(100000,999999);
 
@@ -36,10 +41,10 @@ class UserController extends Controller
             $subject = 'Confirmação de Cadastro!'; 
 
             // Envio de e-mail
-            $mail = Mail::raw($messageContent, function ($message) use ($subject, $request) {
-                $message->to($request->email) 
-                        ->subject($subject); 
-            });
+            // $mail = Mail::raw($messageContent, function ($message) use ($subject, $request) {
+            //     $message->to($request->email) 
+            //             ->subject($subject); 
+            // });
 
             $autocadastro = Autocadastro::create([
                 'email' => $request->email,
@@ -51,11 +56,13 @@ class UserController extends Controller
                 'message' => "code sent by email"
             ], 201);
         }
-        return response()->json([
-            'status' => false,
-            'user'=> $request->email,
-            'message' => "Email ja cadastrado"
-        ], 400);
+        else{
+            return response()->json([
+                'status' => false,
+                'user'=> $request->email,
+                'message' => "Email ja cadastrado"
+            ], 400);
+        }
         
     }
 
@@ -64,11 +71,9 @@ class UserController extends Controller
 
         
 
-        $code = $request->code;
 
-        $userIsValid = Autocadastro::where('password',$code);
-        
-        if (Autocadastro::where(['email' => $request->email, 'password' => $code])){
+        $teste = Autocadastro::where('password', $request->cod)->first();
+        if ($teste && ($teste->email == $request->email)){
             DB::beginTransaction();
 
             try{
@@ -97,6 +102,12 @@ class UserController extends Controller
                     'message' => "User has not been registered $request",
                 ], 400);
             }
+        }
+        else{
+            return response()->json([
+                'status' => false,
+                'user'=> 'Code invalid',
+            ], 201);
         }
         
     }
