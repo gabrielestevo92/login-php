@@ -17,6 +17,16 @@ h1{
 
 }
 
+#createpassword{
+    padding: 10px 5px; 
+}
+
+#code{
+    padding: 10px 5px;
+}
+#name{
+    padding: 10px 5px;
+}
 #email{
     padding: 10px 5px;
 }

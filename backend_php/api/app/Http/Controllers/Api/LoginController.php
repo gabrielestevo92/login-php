@@ -36,6 +36,7 @@ class LoginController extends Controller
     }
     // Metodo responsavel pelo logout do usuario
     public function logout(User $user): JsonResponse{
+        
         try{
             $user->tokens()->delete();
 

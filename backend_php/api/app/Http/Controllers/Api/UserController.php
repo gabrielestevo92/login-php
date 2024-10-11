@@ -12,24 +12,41 @@ use Illuminate\Http\Request;
 use App\Models\Autocadastro;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\EmailValidator;
+use App\Mail\SendEmail;
 use Illuminate\Support\Facades\Auth;
 
 
 class UserController extends Controller
 {
     public function index(){
-        //$users = User::get();
+
+        // Verificar se o usuário está autenticado
+        if (auth()->check()) {
+            // Retorna os dados do usuário autenticado
+            return response()->json([
+                'user' => auth()->user()
+            ], 200);
+        }
+
+        // Retornar erro se não estiver autenticado
         return response()->json([
-            'status' => true,
-        ], 200);
+            'error' => 'Usuário não autenticado'
+        ], 401);
+    }
+
+    public function sendEmail($email,$code)
+    {
+        Mail::to($email)->send(new SendEmail($code,$email));
+        
+        return 'E-mail enviado com sucesso!';
     }
 
     public function autoregister(Request $request) {
-        //dd(Auth::attempt(['email' => $request->email]));;
+
         $email = $request->email;
         $user = User::where('email', $email)->exists();
         $autocadastro = Autocadastro::where('email', $email)->exists();
-        //dd($user);
+        
         
         if (!$user && !$autocadastro){
             // Gera o Codigo de confirmação
@@ -46,9 +63,12 @@ class UserController extends Controller
             //             ->subject($subject); 
             // });
 
+            $this->sendEmail($email,$code);
+            
+
             $autocadastro = Autocadastro::create([
                 'email' => $request->email,
-                'password' => $code, // Criptografando a senha
+                'password' => $code, 
             ]);
             return response()->json([
                 'status' => true,
@@ -61,7 +81,7 @@ class UserController extends Controller
                 'status' => false,
                 'user'=> $request->email,
                 'message' => "Email ja cadastrado"
-            ], 400);
+            ], 200);
         }
         
     }
@@ -72,8 +92,8 @@ class UserController extends Controller
         
 
 
-        $teste = Autocadastro::where('password', $request->cod)->first();
-        if ($teste && ($teste->email == $request->email)){
+        $userRegister = Autocadastro::where('password', $request->cod)->first();
+        if ($userRegister && ($userRegister->email == $request->email)){
             DB::beginTransaction();
 
             try{
@@ -85,15 +105,14 @@ class UserController extends Controller
                 
                 // Registra o usuario
                 DB::commit();
-
+                $userRegister->delete();
                 return response()->json([
                     'status' => true,
                     'user'=> $user,
                     'message' => "user successfully registered",
                     'cod' => mt_rand(100000, 999999)
                 ], 201);
-
-                // Retorna uma mensagem de excessão/erro com status 400 
+                
             }catch(Exception $e){
                 DB::rollBack();
 
@@ -102,11 +121,12 @@ class UserController extends Controller
                     'message' => "User has not been registered $request",
                 ], 400);
             }
+            
         }
         else{
             return response()->json([
                 'status' => false,
-                'user'=> 'Code invalid',
+                'message'=> 'Code invalid',
             ], 201);
         }
         
